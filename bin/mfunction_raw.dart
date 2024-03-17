@@ -1,61 +1,19 @@
-import 'package:args/args.dart';
+import 'dart:io' show exitCode;
+import 'package:args/args.dart' show ArgParser;
+import 'methods/methods.dart' show analyzeFunction;
+import 'typedefs/typedefs.dart' show StringList;
 
-const String version = '0.0.1';
-
-ArgParser buildParser() {
-  return ArgParser()
+void main(StringList arguments) async {
+  final parser = ArgParser()
     ..addFlag(
-      'help',
-      abbr: 'h',
+      'analyze',
       negatable: false,
-      help: 'Print this usage information.',
-    )
-    ..addFlag(
-      'verbose',
-      abbr: 'v',
-      negatable: false,
-      help: 'Show additional command output.',
-    )
-    ..addFlag(
-      'version',
-      negatable: false,
-      help: 'Print the tool version.',
+      abbr: 'a',
     );
-}
 
-void printUsage(ArgParser argParser) {
-  print('Usage: dart mfunction_raw.dart <flags> [arguments]');
-  print(argParser.usage);
-}
+  final argResults = parser.parse(arguments);
+  final paths = argResults.rest;
 
-void main(List<String> arguments) {
-  final ArgParser argParser = buildParser();
-  try {
-    final ArgResults results = argParser.parse(arguments);
-    bool verbose = false;
-
-    // Process the parsed arguments.
-    if (results.wasParsed('help')) {
-      printUsage(argParser);
-      return;
-    }
-    if (results.wasParsed('version')) {
-      print('mfunction_raw version: $version');
-      return;
-    }
-    if (results.wasParsed('verbose')) {
-      verbose = true;
-    }
-
-    // Act on the arguments provided.
-    print('Positional arguments: ${results.rest}');
-    if (verbose) {
-      print('[VERBOSE] All arguments: ${results.arguments}');
-    }
-  } on FormatException catch (e) {
-    // Print usage information if an invalid argument was provided.
-    print(e.message);
-    print('');
-    printUsage(argParser);
-  }
+  await analyzeFunction(paths[0]);
+  exitCode = 0;
 }

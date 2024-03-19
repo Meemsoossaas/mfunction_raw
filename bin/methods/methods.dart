@@ -5,7 +5,7 @@ import 'package:math_expressions/math_expressions.dart'
 import 'package:equations/equations.dart';
 
 import '../classes/classes.dart'
-    show AnalysisContext, MathFunction, StringManipulationService;
+    show AnalysisContext, MathAnalysisService, MathFunction, StringManipulationService;
 import '../extensions/extensions.dart';
 import '../typedefs/typedefs.dart';
 

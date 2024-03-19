@@ -11,7 +11,7 @@ final class DefinitionSet extends Equatable with LatexHandler {
 
   String get variable => result.variable;
 
-  List<String> get invalidNumbers => result.invalidNumbers;
+  Set<double> get invalidNumbers => result.invalidNumbers;
 
   String get sub => result.sub;
 
@@ -46,5 +46,7 @@ final class DefinitionSet extends Equatable with LatexHandler {
   }
 
   @override
-  List<Object?> get props => [result];
+  List<Object?> get props => [
+        result,
+      ];
 }

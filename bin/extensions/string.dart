@@ -13,6 +13,32 @@ extension StringFunctionExtensions on String {
   }
 
   String removeWhitespace() => replaceAll(RegExp(r'\s+'), ' ');
+
+  String modifyFunctionInterpolation<T extends FunctionManipulationOptions>(
+    FunctionModificationType modificationType,
+    T options,
+  ) {
+    switch (modificationType) {
+      case FunctionModificationType.add:
+        return (options is AddOptions) ? _add(this, options) : this;
+      case FunctionModificationType.replace:
+        return (options is ReplaceOptions) ? _replace(this, options) : this;
+      case FunctionModificationType.delete:
+        return (options is DeleteOptions) ? _delete(this, options) : this;
+    }
+  }
+}
+
+String _add(String function, AddOptions options) {
+  throw UnimplementedError();
+}
+
+String _replace(String function, ReplaceOptions options) {
+  throw UnimplementedError();
+}
+
+String _delete(String function, DeleteOptions options) {
+  throw UnimplementedError();
 }
 
 extension StringPropertiesExtensions on String {
@@ -20,7 +46,13 @@ extension StringPropertiesExtensions on String {
 
   bool get isNotAFunction => !isAFunction;
 
-  bool get isNumber => regexps.numberRegex.hasMatch(this);
+  bool get isNumber =>
+      regexps.integerRegex.hasMatch(this) &&
+      !regexps.alphabetRegex.hasMatch(this);
+
+  bool get isDecimal =>
+      regexps.decimalRegex.hasMatch(this) &&
+      regexps.alphabetRegex.hasMatch(this);
 
   bool get isVariable => isChar && regexps.alphabetRegex.hasMatch(this);
 

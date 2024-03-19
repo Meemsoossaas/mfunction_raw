@@ -1,8 +1,12 @@
+import 'dart:async';
 import 'dart:math' as math;
 
 import 'package:equatable/equatable.dart' show Equatable;
+import 'package:equations/equations.dart';
+import 'package:math_expressions/math_expressions.dart';
 import '../constants/constants.dart' as constants;
-import '../enumerations/enumerations.dart' show ComponentType;
+import '../enumerations/enumerations.dart'
+    show ComponentType, DefinitionSetValidationScenario, FunctionModificationType, IncrementDirection, MathAnalysisOperations, NumberTypes, VariableLimits;
 import '../extensions/extensions.dart';
 import '../regexps/regexps.dart' as regexps;
 import '../typedefs/typedefs.dart';
@@ -10,6 +14,8 @@ import '../typedefs/typedefs.dart';
 // Analysis
 
 part 'analysis_context.dart';
+
+part 'analysis_limits.dart';
 
 part 'definition_set.dart';
 
@@ -26,3 +32,5 @@ part 'latex_handler.dart';
 part 'math_function.dart';
 
 part 'string_manipulation_service.dart';
+
+part 'function_manipulation_options.dart';

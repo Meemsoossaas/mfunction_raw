@@ -97,13 +97,22 @@ mixin class StringManipulationService {
     return result;
   }
 
+  List<String> findExponentialExpressions(String function) {
+    var result = <String>[];
+    Iterable<Match> matches = regexps.exponentialRegex.allMatches(function);
+    for (Match match in matches) {
+      result.add(match.group(0)!);
+    }
+    return result;
+  }
+
   FunctionExtractionResult<FractionResult> extractFractionInfo(
     List<String> fractions,
   ) {
     var result = <int, FractionResult>{};
     fractions.asMap().forEach(
       (key, value) {
-        List<String> parts = value.split('/');
+        List<String> parts = value.split(constants.divideBy);
         String numerator = parts[0].substring(1);
         String denominator = parts[1].substring(0, parts[1].length - 1);
         result[key] = (
@@ -169,6 +178,25 @@ mixin class StringManipulationService {
     return result;
   }
 
+  FunctionExtractionResult<ExponentialResult> extractExponentialInfo(
+    List<String> exponentialExpressions,
+  ) {
+    var result = <int, ExponentialResult>{};
+    exponentialExpressions.asMap().forEach(
+      (key, value) {
+        List<String> parts = value.split(constants.power);
+        String base = parts[0].substring(1);
+        String power = parts[1].substring(0, parts[1].length - 1);
+        result[key] = (
+          base: base,
+          power: power,
+        );
+      },
+    );
+    return result;
+  }
+
+  @Deprecated('')
   List<String> assembleFinalComponents() {
     throw Exception();
   }

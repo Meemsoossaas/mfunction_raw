@@ -4,6 +4,7 @@ final class LaTexCode extends Equatable {
   static const String elementOf = '\\in';
 
   static const String infinity = "\\infty";
+  static const String positiveInfinity = "+\\infty";
   static const String negativeInfinity = "-\\infty";
 
   static const String prime = "\\mathbb{P}";
@@ -19,6 +20,11 @@ final class LaTexCode extends Equatable {
   static const String sedenions = "\\mathbb{S}";
 
   static const String definitionSet = "D";
+
+  static const String lessThan = "<";
+  static const String greaterThan = ">";
+  static const String lessOrEqualTo = "\\leq";
+  static const String greaterOrEqualTo = "\\geq";
 
   @override
   List<Object?> get props => [];

@@ -13,7 +13,9 @@ RegExp fullFunctionRegex = RegExp(
 
 RegExp alphabetRegex = RegExp(r'[a-z]+');
 
-RegExp numberRegex = RegExp(r'\d+');
+RegExp integerRegex = RegExp(r'\d+');
+
+RegExp decimalRegex = RegExp(r'^-?\d+(\.\d+)?$');
 
 RegExp bracketRegex = RegExp(r'\([^()]*\)');
 
@@ -23,3 +25,5 @@ RegExp logarithmicRegex =
     RegExp(r'(log|lg|ln)\(\d*\)\(\d*\)|lg\(\d*\)|ln\(\d*\)');
 
 RegExp rootRegex = RegExp(r'sqrt\((\d+)\)|sqrt\((\d+)\)\((\d+)\)');
+
+RegExp exponentialRegex = RegExp(r'\([^()]+?\^[^()]+?\)');

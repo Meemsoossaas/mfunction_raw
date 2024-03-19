@@ -22,6 +22,11 @@ typedef RootResult = ({
   String value,
 });
 
+typedef ExponentialResult = ({
+  String base,
+  String power,
+});
+
 typedef FractionOperatorResult = ({
   List<String> numeratorOperators,
   List<String> denominatorOperators,

@@ -1,5 +1,7 @@
 part of 'typedefs.dart';
 
+typedef AnalysisResult = Map<MathAnalysisOperations, Record>;
+
 typedef DistanceFromZero = ({
   double min,
   double max,
@@ -8,6 +10,9 @@ typedef DistanceFromZero = ({
 typedef PreAnalysisResult = ({
   int n,
   Map<int, List<String>> organizedNMap,
+  Expression f1,
+  Expression f2,
+  Expression f3,
 });
 
 typedef DefinitionSetResult = ({
@@ -21,7 +26,12 @@ typedef DefinitionSetResult = ({
 
 typedef SetOfValuesResult = ();
 
-typedef AsymptotesResult = ();
+typedef AsymptotesResult = ({
+  List<double> horizontalAsymptotes,
+  List<double> verticalAsymptotes,
+  List<String> obliqueAsymptotes,
+  List<String> curvedAsymptotes,
+});
 
 typedef LimitsResult = ();
 

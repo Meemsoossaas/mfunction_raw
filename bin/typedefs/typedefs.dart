@@ -1,5 +1,9 @@
+import 'package:math_expressions/math_expressions.dart';
+
 import '../classes/classes.dart';
 import '../enumerations/enumerations.dart';
+
+part 'convert_typedefs.dart';
 
 part 'core_typedefs.dart';
 

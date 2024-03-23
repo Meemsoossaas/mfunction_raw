@@ -28,7 +28,10 @@ base class AnalysisLimits extends Equatable {
     return math.pow(max - min, 2);
   }
 
-  DistanceFromZero get distanceFromZero => (min: min, max: max);
+  DistanceFromZero get distanceFromZero => (
+        min: min,
+        max: max,
+      );
 
   IncrementDirection get incrementDirection {
     if (min < max) {
@@ -38,7 +41,10 @@ base class AnalysisLimits extends Equatable {
     }
   }
 
-  AnalysisLimits reversed() => AnalysisLimits(min: max, max: min);
+  AnalysisLimits reversed() => AnalysisLimits(
+        min: max,
+        max: min,
+      );
 
   @override
   List<Object?> get props => [

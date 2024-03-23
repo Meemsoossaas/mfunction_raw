@@ -6,7 +6,14 @@ import 'package:equations/equations.dart';
 import 'package:math_expressions/math_expressions.dart';
 import '../constants/constants.dart' as constants;
 import '../enumerations/enumerations.dart'
-    show ComponentType, DefinitionSetValidationScenario, FunctionModificationType, IncrementDirection, MathAnalysisOperations, NumberTypes, VariableLimits;
+    show
+        ComponentType,
+        DefinitionSetValidationScenario,
+        FunctionModificationType,
+        IncrementDirection,
+        MathAnalysisOperations,
+        NumberTypes,
+        VariableLimits;
 import '../extensions/extensions.dart';
 import '../regexps/regexps.dart' as regexps;
 import '../typedefs/typedefs.dart';
@@ -21,6 +28,10 @@ part 'definition_set.dart';
 
 part 'math_analysis_service.dart';
 
+part 'math_integral_service.dart';
+
+part 'vector.dart';
+
 // LaTex
 
 part 'latex_code.dart';
@@ -34,3 +45,5 @@ part 'math_function.dart';
 part 'string_manipulation_service.dart';
 
 part 'function_manipulation_options.dart';
+
+part 'function_convert_service.dart';

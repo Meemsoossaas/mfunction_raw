@@ -65,6 +65,12 @@ extension StringPropertiesExtensions on String {
       (contains(constants.cos)) ||
       (contains(constants.tan));
 
+  bool get isTrigonometricKeyword =>
+      (length == 3) &&
+      ((contains(constants.sin)) ||
+          (contains(constants.cos)) ||
+          (contains(constants.tan)));
+
   bool get isLogarithmic =>
       (contains(constants.log)) ||
       (contains(constants.lg)) ||

@@ -1,5 +1,9 @@
 import '../classes/classes.dart';
 
+part 'analysis_type.dart';
+
+part 'octants.dart';
+
 part 'component_type.dart';
 
 part 'definition_set_validation_scenario.dart';

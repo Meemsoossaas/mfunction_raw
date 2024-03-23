@@ -8,10 +8,10 @@ mixin class StringManipulationService {
 
   StringManipulationService._internal();
 
-  List<String> getComponents(String function) {
+  Map<int, String> getComponents(String function) {
     Iterable<Match> matches = regexps.fullFunctionRegex.allMatches(function);
     List<String> tokens = matches.map((match) => match.group(0)!).toList();
-    return tokens;
+    return tokens.asMap();
   }
 
   ComponentType getType(String component) {
@@ -62,9 +62,10 @@ mixin class StringManipulationService {
     return matches.map((match) => match.group(0)!).toList();
   }
 
-  List<String> findFractions(String function) {
+  Map<int, String> findFractions(String function) {
     Iterable<RegExpMatch> matches = regexps.fractionRegex.allMatches(function);
-    var fractions = <String>[];
+    var fractions = <int, String>{};
+    int i = 0;
     for (RegExpMatch match in matches) {
       String fraction = match.group(0)!;
       if (fraction.contains('+') ||
@@ -72,45 +73,55 @@ mixin class StringManipulationService {
           fraction.contains('*') ||
           fraction.contains('/') ||
           fraction.contains('^')) {
-        fractions.add(fraction);
+        fractions[i] = fraction;
       }
+      i++;
     }
     return fractions;
   }
 
-  List<String> findLogarithmicExpressions(String function) {
+  Map<int, String> findLogarithmicExpressions(String function) {
     var result = <String>[];
     Iterable<RegExpMatch> matches =
         regexps.logarithmicRegex.allMatches(function);
     for (RegExpMatch match in matches) {
       result.add(match.group(0)!);
     }
-    return result;
+    return result.asMap();
   }
 
-  List<String> findRootExpressions(String function) {
+  Map<int, String> findRootExpressions(String function) {
     var result = <String>[];
     Iterable<Match> matches = regexps.rootRegex.allMatches(function);
     for (Match match in matches) {
       result.add(match.group(0)!);
     }
-    return result;
+    return result.asMap();
   }
 
-  List<String> findExponentialExpressions(String function) {
+  Map<int, String> findExponentialExpressions(String function) {
     var result = <String>[];
     Iterable<Match> matches = regexps.exponentialRegex.allMatches(function);
     for (Match match in matches) {
       result.add(match.group(0)!);
     }
-    return result;
+    return result.asMap();
+  }
+
+  Map<int, String> findTrigonometricExpression(String function) {
+    var result = <String>[];
+    Iterable<Match> matches = regexps.trigonometricRegex.allMatches(function);
+    for (Match match in matches) {
+      result.add(match.group(0)!);
+    }
+    return result.asMap();
   }
 
   FunctionExtractionResult<FractionResult> extractFractionInfo(
-    List<String> fractions,
+    Map<int, String> fractions,
   ) {
     var result = <int, FractionResult>{};
-    fractions.asMap().forEach(
+    fractions.forEach(
       (key, value) {
         List<String> parts = value.split(constants.divideBy);
         String numerator = parts[0].substring(1);
@@ -125,10 +136,10 @@ mixin class StringManipulationService {
   }
 
   FunctionExtractionResult<LogarithmicResult> extractLogarithmicInfo(
-    List<String> logarithmicExpressions,
+    Map<int, String> logarithmicExpressions,
   ) {
     var result = <int, LogarithmicResult>{};
-    logarithmicExpressions.asMap().forEach(
+    logarithmicExpressions.forEach(
       (key, value) {
         Match? match = regexps.logarithmicRegex.firstMatch(value);
         if (match != null) {
@@ -155,10 +166,10 @@ mixin class StringManipulationService {
   }
 
   FunctionExtractionResult<RootResult> extractRootInfo(
-    List<String> rootExpressions,
+    Map<int, String> rootExpressions,
   ) {
     var result = <int, RootResult>{};
-    rootExpressions.asMap().forEach(
+    rootExpressions.forEach(
       (key, value) {
         Iterable<Match> matches = regexps.rootRegex.allMatches(value);
         for (Match match in matches) {
@@ -179,10 +190,10 @@ mixin class StringManipulationService {
   }
 
   FunctionExtractionResult<ExponentialResult> extractExponentialInfo(
-    List<String> exponentialExpressions,
+    Map<int, String> exponentialExpressions,
   ) {
     var result = <int, ExponentialResult>{};
-    exponentialExpressions.asMap().forEach(
+    exponentialExpressions.forEach(
       (key, value) {
         List<String> parts = value.split(constants.power);
         String base = parts[0].substring(1);
@@ -191,6 +202,28 @@ mixin class StringManipulationService {
           base: base,
           power: power,
         );
+      },
+    );
+    return result;
+  }
+
+  FunctionExtractionResult<TrigonometricResult> extractTrigonometricInfo(
+    Map<int, String> trigonometricExpressions,
+  ) {
+    var result = <int, TrigonometricResult>{};
+    trigonometricExpressions.forEach(
+      (key, value) {
+        Iterable<Match> matches = regexps.trigonometricRegex.allMatches(value);
+        for (Match match in matches) {
+          String keyword = match.group(2)!;
+          String exponent = match.group(3) ?? "1";
+          String innerContent = match.group(4)!;
+          result[key] = (
+            keyword: keyword,
+            exponent: exponent,
+            innerContent: innerContent,
+          ) as TrigonometricResult;
+        }
       },
     );
     return result;

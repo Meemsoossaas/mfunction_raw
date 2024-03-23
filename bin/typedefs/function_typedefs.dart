@@ -1,10 +1,31 @@
 part of 'typedefs.dart';
 
-typedef FunctionExtractionResult<T> = Map<int, T>;
+typedef FunctionBuilder<T extends num> = T Function(
+  T x, [
+  T? rest,
+]);
+
+typedef AnalysisBuilder = void Function(
+  AnalysisContext context,
+  ExtractionCollection collection,
+  MathAnalysisOperations currentOperation,
+);
+
+typedef MathAnalysisOperationBuilder = List<AnalysisBuilder>;
+
+typedef FunctionExtractionResult<T extends Object> = Map<int, T>;
 
 typedef ComponentCombination = ({
   ComponentType type,
   String component,
+});
+
+typedef ExtractionCollection = ({
+  FractionResult fractionResult,
+  LogarithmicResult logarithmicResult,
+  RootResult rootResult,
+  ExponentialResult exponentialResult,
+  TrigonometricResult trigonometricResult,
 });
 
 typedef FractionResult = ({
@@ -25,6 +46,12 @@ typedef RootResult = ({
 typedef ExponentialResult = ({
   String base,
   String power,
+});
+
+typedef TrigonometricResult = ({
+  String keyword,
+  String exponent,
+  String innerCount,
 });
 
 typedef FractionOperatorResult = ({

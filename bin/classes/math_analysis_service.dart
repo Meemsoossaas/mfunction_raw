@@ -10,6 +10,7 @@ mixin class MathAnalysisService {
 
   MathAnalysisService._internal();
 
+  /// Basically the [main()] of [MathAnalysisService]
   void operate(
     AnalysisContext context,
     Expression function,
@@ -17,24 +18,27 @@ mixin class MathAnalysisService {
     FunctionExtractionResult<LogarithmicResult> extractLogarithmicInfo,
     FunctionExtractionResult<RootResult> extractRootInfo,
     FunctionExtractionResult<ExponentialResult> extractExponentialInfo,
-  ) {
-    _operate(
+    FunctionExtractionResult<TrigonometricResult> extractionTrigonometricInfo,
+  ) async {
+    await _operate(
       context,
       function,
       extractFractionInfo,
       extractLogarithmicInfo,
       extractRootInfo,
       extractExponentialInfo,
+      extractionTrigonometricInfo,
     );
   }
 
-  Future<Map<MathAnalysisOperations, Record>> _operate(
+  Future<AnalysisResult> _operate(
     AnalysisContext context,
     Expression function,
     FunctionExtractionResult<FractionResult> extractFractionInfo,
     FunctionExtractionResult<LogarithmicResult> extractLogarithmicInfo,
     FunctionExtractionResult<RootResult> extractRootInfo,
     FunctionExtractionResult<ExponentialResult> extractExponentialInfo,
+    FunctionExtractionResult<TrigonometricResult> extractionTrigonometricInfo,
   ) async {
     var result = <MathAnalysisOperations, Record>{};
     await _preAnalysis(
@@ -44,9 +48,9 @@ mixin class MathAnalysisService {
       extractLogarithmicInfo,
       extractRootInfo,
       extractExponentialInfo,
+      extractionTrigonometricInfo,
     ).then(
       (value) {
-        print(value);
         result[MathAnalysisOperations.preAnalysis] = value;
       },
     );
@@ -57,6 +61,7 @@ mixin class MathAnalysisService {
       extractLogarithmicInfo,
       extractRootInfo,
       extractExponentialInfo,
+      extractionTrigonometricInfo,
     ).then(
       (value) => result[MathAnalysisOperations.definitionSet] = value,
     );
@@ -67,6 +72,7 @@ mixin class MathAnalysisService {
       extractLogarithmicInfo,
       extractRootInfo,
       extractExponentialInfo,
+      extractionTrigonometricInfo,
     ).then(
       (value) => result[MathAnalysisOperations.setOfValues] = value,
     );
@@ -77,6 +83,9 @@ mixin class MathAnalysisService {
       extractLogarithmicInfo,
       extractRootInfo,
       extractExponentialInfo,
+      extractionTrigonometricInfo,
+      definitionSetResult:
+          result[MathAnalysisOperations.definitionSet] as DefinitionSetResult,
     ).then(
       (value) => result[MathAnalysisOperations.asymptotes] = value,
     );
@@ -87,6 +96,7 @@ mixin class MathAnalysisService {
       extractLogarithmicInfo,
       extractRootInfo,
       extractExponentialInfo,
+      extractionTrigonometricInfo,
     ).then(
       (value) => result[MathAnalysisOperations.limits] = value,
     );
@@ -97,6 +107,7 @@ mixin class MathAnalysisService {
       extractLogarithmicInfo,
       extractRootInfo,
       extractExponentialInfo,
+      extractionTrigonometricInfo,
     ).then(
       (value) => result[MathAnalysisOperations.zeroPoints] = value,
     );
@@ -107,6 +118,7 @@ mixin class MathAnalysisService {
       extractLogarithmicInfo,
       extractRootInfo,
       extractExponentialInfo,
+      extractionTrigonometricInfo,
     ).then(
       (value) => result[MathAnalysisOperations.derivation] = value,
     );
@@ -117,6 +129,7 @@ mixin class MathAnalysisService {
       extractLogarithmicInfo,
       extractRootInfo,
       extractExponentialInfo,
+      extractionTrigonometricInfo,
     ).then(
       (value) => result[MathAnalysisOperations.monotony] = value,
     );
@@ -127,6 +140,7 @@ mixin class MathAnalysisService {
       extractLogarithmicInfo,
       extractRootInfo,
       extractExponentialInfo,
+      extractionTrigonometricInfo,
     ).then(
       (value) => result[MathAnalysisOperations.slope] = value,
     );
@@ -137,6 +151,7 @@ mixin class MathAnalysisService {
       extractLogarithmicInfo,
       extractRootInfo,
       extractExponentialInfo,
+      extractionTrigonometricInfo,
     ).then(
       (value) => result[MathAnalysisOperations.extremePoints] = value,
     );
@@ -147,6 +162,7 @@ mixin class MathAnalysisService {
       extractLogarithmicInfo,
       extractRootInfo,
       extractExponentialInfo,
+      extractionTrigonometricInfo,
     ).then(
       (value) => result[MathAnalysisOperations.curvature] = value,
     );
@@ -157,6 +173,7 @@ mixin class MathAnalysisService {
       extractLogarithmicInfo,
       extractRootInfo,
       extractExponentialInfo,
+      extractionTrigonometricInfo,
     ).then(
       (value) => result[MathAnalysisOperations.turningPoint] = value,
     );
@@ -167,6 +184,7 @@ mixin class MathAnalysisService {
       extractLogarithmicInfo,
       extractRootInfo,
       extractExponentialInfo,
+      extractionTrigonometricInfo,
     ).then(
       (value) {
         print(value);
@@ -183,6 +201,7 @@ mixin class MathAnalysisService {
     FunctionExtractionResult<LogarithmicResult> extractLogarithmicInfo,
     FunctionExtractionResult<RootResult> extractRootInfo,
     FunctionExtractionResult<ExponentialResult> extractExponentialInfo,
+    FunctionExtractionResult<TrigonometricResult> extractionTrigonometricInfo,
   ) async {
     await Future.delayed(
       Duration(seconds: 1),
@@ -206,10 +225,20 @@ mixin class MathAnalysisService {
       parsedN,
       extractExponentialInfo,
     );
+    var derivationResults = <Expression>[];
+    for (int i = 1; i <= 3; i++) {
+      derivationResults.add(
+        function.derive(defaultVariable),
+      );
+    }
+
     //
     return (
       n: parsedN,
       organizedNMap: organizedNMap,
+      f1: derivationResults[0].simplify(),
+      f2: derivationResults[1].simplify(),
+      f3: derivationResults[2].simplify(),
     );
   }
 
@@ -251,6 +280,7 @@ mixin class MathAnalysisService {
     FunctionExtractionResult<LogarithmicResult> extractLogarithmicInfo,
     FunctionExtractionResult<RootResult> extractRootInfo,
     FunctionExtractionResult<ExponentialResult> extractExponentialInfo,
+    FunctionExtractionResult<TrigonometricResult> extractionTrigonometricInfo,
   ) async {
     var result = <int, List<double>>{};
     var uniqueFractionInvalidNumbers = <double>{};
@@ -322,8 +352,22 @@ mixin class MathAnalysisService {
     FunctionExtractionResult<LogarithmicResult> extractLogarithmicInfo,
     FunctionExtractionResult<RootResult> extractRootInfo,
     FunctionExtractionResult<ExponentialResult> extractExponentialInfo,
-  ) async {
-    throw UnimplementedError();
+    FunctionExtractionResult<TrigonometricResult> extractionTrigonometricInfo, {
+    required DefinitionSetResult definitionSetResult,
+  }) async {
+    var horizontalAsymptotes = <double>[];
+    var verticalAsymptotes = <double>[];
+    var obliqueAsymptotes = <String>[];
+    var curvedAsymptotes = <String>[];
+    extractFractionInfo.forEach(
+      (key, value) {},
+    );
+    return (
+      horizontalAsymptotes: horizontalAsymptotes,
+      verticalAsymptotes: verticalAsymptotes,
+      obliqueAsymptotes: obliqueAsymptotes,
+      curvedAsymptotes: curvedAsymptotes,
+    );
   }
 
   //
@@ -335,6 +379,7 @@ mixin class MathAnalysisService {
     FunctionExtractionResult<LogarithmicResult> extractLogarithmicInfo,
     FunctionExtractionResult<RootResult> extractRootInfo,
     FunctionExtractionResult<ExponentialResult> extractExponentialInfo,
+    FunctionExtractionResult<TrigonometricResult> extractionTrigonometricInfo,
   ) async {
     throw UnimplementedError();
   }
@@ -346,6 +391,7 @@ mixin class MathAnalysisService {
     FunctionExtractionResult<LogarithmicResult> extractLogarithmicInfo,
     FunctionExtractionResult<RootResult> extractRootInfo,
     FunctionExtractionResult<ExponentialResult> extractExponentialInfo,
+    FunctionExtractionResult<TrigonometricResult> extractionTrigonometricInfo,
   ) async {
     throw UnimplementedError();
   }
@@ -357,6 +403,7 @@ mixin class MathAnalysisService {
     FunctionExtractionResult<LogarithmicResult> extractLogarithmicInfo,
     FunctionExtractionResult<RootResult> extractRootInfo,
     FunctionExtractionResult<ExponentialResult> extractExponentialInfo,
+    FunctionExtractionResult<TrigonometricResult> extractionTrigonometricInfo,
   ) async {
     throw UnimplementedError();
   }
@@ -368,6 +415,7 @@ mixin class MathAnalysisService {
     FunctionExtractionResult<LogarithmicResult> extractLogarithmicInfo,
     FunctionExtractionResult<RootResult> extractRootInfo,
     FunctionExtractionResult<ExponentialResult> extractExponentialInfo,
+    FunctionExtractionResult<TrigonometricResult> extractionTrigonometricInfo,
   ) async {
     throw UnimplementedError();
   }
@@ -379,6 +427,7 @@ mixin class MathAnalysisService {
     FunctionExtractionResult<LogarithmicResult> extractLogarithmicInfo,
     FunctionExtractionResult<RootResult> extractRootInfo,
     FunctionExtractionResult<ExponentialResult> extractExponentialInfo,
+    FunctionExtractionResult<TrigonometricResult> extractionTrigonometricInfo,
   ) async {
     throw UnimplementedError();
   }
@@ -390,6 +439,7 @@ mixin class MathAnalysisService {
     FunctionExtractionResult<LogarithmicResult> extractLogarithmicInfo,
     FunctionExtractionResult<RootResult> extractRootInfo,
     FunctionExtractionResult<ExponentialResult> extractExponentialInfo,
+    FunctionExtractionResult<TrigonometricResult> extractionTrigonometricInfo,
   ) async {
     throw UnimplementedError();
   }
@@ -401,6 +451,7 @@ mixin class MathAnalysisService {
     FunctionExtractionResult<LogarithmicResult> extractLogarithmicInfo,
     FunctionExtractionResult<RootResult> extractRootInfo,
     FunctionExtractionResult<ExponentialResult> extractExponentialInfo,
+    FunctionExtractionResult<TrigonometricResult> extractionTrigonometricInfo,
   ) async {
     throw UnimplementedError();
   }
@@ -412,6 +463,7 @@ mixin class MathAnalysisService {
     FunctionExtractionResult<LogarithmicResult> extractLogarithmicInfo,
     FunctionExtractionResult<RootResult> extractRootInfo,
     FunctionExtractionResult<ExponentialResult> extractExponentialInfo,
+    FunctionExtractionResult<TrigonometricResult> extractionTrigonometricInfo,
   ) async {
     throw UnimplementedError();
   }
@@ -423,6 +475,7 @@ mixin class MathAnalysisService {
     FunctionExtractionResult<LogarithmicResult> extractLogarithmicInfo,
     FunctionExtractionResult<RootResult> extractRootInfo,
     FunctionExtractionResult<ExponentialResult> extractExponentialInfo,
+    FunctionExtractionResult<TrigonometricResult> extractionTrigonometricInfo,
   ) async {
     throw UnimplementedError();
   }
@@ -434,6 +487,7 @@ mixin class MathAnalysisService {
     FunctionExtractionResult<LogarithmicResult> extractLogarithmicInfo,
     FunctionExtractionResult<RootResult> extractRootInfo,
     FunctionExtractionResult<ExponentialResult> extractExponentialInfo,
+    FunctionExtractionResult<TrigonometricResult> extractionTrigonometricInfo,
   ) async {
     throw UnimplementedError();
   }

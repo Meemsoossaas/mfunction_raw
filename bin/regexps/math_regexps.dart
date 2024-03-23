@@ -27,3 +27,5 @@ RegExp logarithmicRegex =
 RegExp rootRegex = RegExp(r'sqrt\((\d+)\)|sqrt\((\d+)\)\((\d+)\)');
 
 RegExp exponentialRegex = RegExp(r'\([^()]+?\^[^()]+?\)');
+
+RegExp trigonometricRegex = RegExp(r'\b(cos|sin|tan)\((\d*)\)\((.*?)\)');

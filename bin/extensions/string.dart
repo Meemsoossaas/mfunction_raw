@@ -12,7 +12,7 @@ extension StringFunctionExtensions on String {
     }
   }
 
-  String removeWhitespace() => replaceAll(RegExp(r'\s+'), ' ');
+  String removeWhitespace() => replaceAll(RegExp(r'\s+'), '');
 
   String modifyFunctionInterpolation<T extends FunctionManipulationOptions>(
     FunctionModificationType modificationType,
@@ -89,4 +89,10 @@ extension StringPropertiesExtensions on String {
       ((this == constants.leftBracket) || (this == constants.rightBracket));
 
   bool get isChar => length == 1;
+
+  String get first => this[0];
+
+  String get last => this[length - 1];
+
+  String get mid => this[length % 2 == 0 ? length ~/ 2 : (length / 2).round()];
 }

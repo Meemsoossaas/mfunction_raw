@@ -11,9 +11,12 @@ typedef MathOperatorResult = ({
 });
 
 typedef StringManipulationSummary = ({
+  FunctionManipulation<FactorResult> factorResult,
   FunctionManipulation<FractionResult> fractionResult,
   FunctionManipulation<LogarithmicResult> logarithmicResult,
   FunctionManipulation<RootResult> rootResult,
   FunctionManipulation<ExponentialResult> exponentialResult,
   FunctionManipulation<TrigonometricResult> trigonometricResult,
 });
+
+typedef ExpressionMap = Map<int, String>;

@@ -28,30 +28,40 @@ typedef ExtractionCollection = ({
   TrigonometricResult trigonometricResult,
 });
 
+typedef FactorResult = ({
+  String prefix,
+  List<String> factors,
+});
+
 typedef FractionResult = ({
+  String prefix,
   String numerator,
   String denominator,
 });
 
 typedef LogarithmicResult = ({
+  String prefix,
   String base,
   String result,
 });
 
 typedef RootResult = ({
+  String prefix,
   String n,
   String value,
 });
 
 typedef ExponentialResult = ({
+  String prefix,
   String base,
   String power,
 });
 
 typedef TrigonometricResult = ({
+  String prefix,
   String keyword,
   String exponent,
-  String innerCount,
+  String innerContent,
 });
 
 typedef FractionOperatorResult = ({

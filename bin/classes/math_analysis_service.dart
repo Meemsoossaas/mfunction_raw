@@ -51,6 +51,7 @@ mixin class MathAnalysisService {
       extractionTrigonometricInfo,
     ).then(
       (value) {
+        print(value);
         result[MathAnalysisOperations.preAnalysis] = value;
       },
     );
@@ -63,7 +64,10 @@ mixin class MathAnalysisService {
       extractExponentialInfo,
       extractionTrigonometricInfo,
     ).then(
-      (value) => result[MathAnalysisOperations.definitionSet] = value,
+      (value) {
+        print(value);
+        result[MathAnalysisOperations.definitionSet] = value;
+      },
     );
     await _setOfValues(
       context,
@@ -74,7 +78,10 @@ mixin class MathAnalysisService {
       extractExponentialInfo,
       extractionTrigonometricInfo,
     ).then(
-      (value) => result[MathAnalysisOperations.setOfValues] = value,
+      (value) {
+        print(value);
+        result[MathAnalysisOperations.setOfValues] = value;
+      },
     );
     await _asymptotes(
       context,
@@ -87,7 +94,10 @@ mixin class MathAnalysisService {
       definitionSetResult:
           result[MathAnalysisOperations.definitionSet] as DefinitionSetResult,
     ).then(
-      (value) => result[MathAnalysisOperations.asymptotes] = value,
+      (value) {
+        print(value);
+        result[MathAnalysisOperations.asymptotes] = value;
+      },
     );
     await _limits(
       context,
@@ -98,7 +108,10 @@ mixin class MathAnalysisService {
       extractExponentialInfo,
       extractionTrigonometricInfo,
     ).then(
-      (value) => result[MathAnalysisOperations.limits] = value,
+      (value) {
+        print(value);
+        result[MathAnalysisOperations.limits] = value;
+      },
     );
     await _zeroPoints(
       context,
@@ -109,7 +122,10 @@ mixin class MathAnalysisService {
       extractExponentialInfo,
       extractionTrigonometricInfo,
     ).then(
-      (value) => result[MathAnalysisOperations.zeroPoints] = value,
+      (value) {
+        print(value);
+        result[MathAnalysisOperations.zeroPoints] = value;
+      },
     );
     await _derivation(
       context,
@@ -120,7 +136,10 @@ mixin class MathAnalysisService {
       extractExponentialInfo,
       extractionTrigonometricInfo,
     ).then(
-      (value) => result[MathAnalysisOperations.derivation] = value,
+      (value) {
+        print(value);
+        result[MathAnalysisOperations.derivation] = value;
+      },
     );
     await _monotony(
       context,
@@ -131,7 +150,10 @@ mixin class MathAnalysisService {
       extractExponentialInfo,
       extractionTrigonometricInfo,
     ).then(
-      (value) => result[MathAnalysisOperations.monotony] = value,
+      (value) {
+        print(value);
+        result[MathAnalysisOperations.monotony] = value;
+      },
     );
     await _slope(
       context,
@@ -142,7 +164,10 @@ mixin class MathAnalysisService {
       extractExponentialInfo,
       extractionTrigonometricInfo,
     ).then(
-      (value) => result[MathAnalysisOperations.slope] = value,
+      (value) {
+        print(value);
+        result[MathAnalysisOperations.slope] = value;
+      },
     );
     await _extremePoints(
       context,
@@ -153,7 +178,10 @@ mixin class MathAnalysisService {
       extractExponentialInfo,
       extractionTrigonometricInfo,
     ).then(
-      (value) => result[MathAnalysisOperations.extremePoints] = value,
+      (value) {
+        print(value);
+        result[MathAnalysisOperations.extremePoints] = value;
+      },
     );
     await _curvature(
       context,
@@ -164,7 +192,10 @@ mixin class MathAnalysisService {
       extractExponentialInfo,
       extractionTrigonometricInfo,
     ).then(
-      (value) => result[MathAnalysisOperations.curvature] = value,
+      (value) {
+        print(value);
+        result[MathAnalysisOperations.curvature] = value;
+      },
     );
     await _turningPoints(
       context,
@@ -175,7 +206,10 @@ mixin class MathAnalysisService {
       extractExponentialInfo,
       extractionTrigonometricInfo,
     ).then(
-      (value) => result[MathAnalysisOperations.turningPoint] = value,
+      (value) {
+        print(value);
+        result[MathAnalysisOperations.turningPoint] = value;
+      },
     );
     await _integral(
       context,
@@ -225,20 +259,16 @@ mixin class MathAnalysisService {
       parsedN,
       extractExponentialInfo,
     );
-    var derivationResults = <Expression>[];
-    for (int i = 1; i <= 3; i++) {
-      derivationResults.add(
-        function.derive(defaultVariable),
-      );
-    }
-
+    Expression f1 = function.derive(defaultVariable).simplify();
+    Expression f2 = f1.derive(defaultVariable).simplify();
+    Expression f3 = f2.derive(defaultVariable).simplify();
     //
     return (
       n: parsedN,
       organizedNMap: organizedNMap,
-      f1: derivationResults[0].simplify(),
-      f2: derivationResults[1].simplify(),
-      f3: derivationResults[2].simplify(),
+      f1: f1,
+      f2: f2,
+      f3: f3,
     );
   }
 

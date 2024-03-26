@@ -19,13 +19,22 @@ RegExp decimalRegex = RegExp(r'^-?\d+(\.\d+)?$');
 
 RegExp bracketRegex = RegExp(r'\([^()]*\)');
 
-RegExp fractionRegex = RegExp(r'\((.*?)\/(.*?)\)');
+RegExp factorRegex = RegExp(r'([-+])?\(([^\/^]*)\)');
 
-RegExp logarithmicRegex =
-    RegExp(r'(log|lg|ln)\(\d*\)\(\d*\)|lg\(\d*\)|ln\(\d*\)');
+RegExp extractFactorRegex = RegExp(r'([0-9]|[a-z]|[π]+)');
 
-RegExp rootRegex = RegExp(r'sqrt\((\d+)\)|sqrt\((\d+)\)\((\d+)\)');
+RegExp fractionRegex = RegExp(r'([+-]?)(\(([a-z0-9]+)/([a-z0-9]+)\))');
 
-RegExp exponentialRegex = RegExp(r'\([^()]+?\^[^()]+?\)');
+RegExp logarithmicRegex = RegExp(
+  r'([-+]?)(log|lg|ln)\((\d*)\)\(([a-z0-9]+)\)|lg\(([a-z0-9]+)\)|ln\(([a-z0-9]+)\)',
+);
 
-RegExp trigonometricRegex = RegExp(r'\b(cos|sin|tan)\((\d*)\)\((.*?)\)');
+RegExp rootRegex = RegExp(
+  r'([-+]?)sqrt\(([a-z0-9]+)\)|sqrt\((\d+)\)\(([a-z0-9]+)\)',
+);
+
+RegExp exponentialRegex = RegExp(r'([-+]?)\([^()]+?\^[^()]+?\)');
+
+RegExp trigonometricRegex = RegExp(
+  r'([-+]?)(sin|cos|tan)\((\d+)?\)\(([^()]+)?\)|((sin|cos|tan)\(([^()]+)?\))',
+);

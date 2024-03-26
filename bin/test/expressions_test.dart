@@ -1,6 +1,7 @@
 import 'package:equations/equations.dart';
+import 'package:math_expressions/math_expressions.dart';
 
 void main() {
-  Quadratic c = Quadratic.realEquation(a: 1, b: -2);
-  print(c.solutions());
+  Expression e = Parser().parse('2x + ln(e)');
+  print(e.toString());
 }

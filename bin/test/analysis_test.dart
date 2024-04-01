@@ -1,6 +1,9 @@
 import 'package:equations/equations.dart';
 
 void main() {
-  Newton n = Newton(function: '2 * x', x0: 1);
-  print(n.solve().guesses);
+  RegExp regExp = RegExp(r'([-+]?)sqrt\(([0-9]+)\)\(([\s\S]*)\)');
+  var matches = regExp.allMatches('sqrt(4)(3x + e)');
+  for (var match in matches) {
+    print(match.group(0)!);
+  }
 }

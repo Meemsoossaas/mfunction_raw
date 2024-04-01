@@ -254,7 +254,13 @@ mixin class MathAnalysisService {
             int.parse(value) > int.parse(element) ? value : element,
       );
     }
-    int parsedN = int.parse(n ?? '0');
+    int parsedN = int.parse(
+      n!.isVariable
+          ? '1'
+          : (n.isNumber || n.isDecimal)
+              ? n
+              : '1',
+    );
     var organizedNMap = _getBaseAndPower(
       parsedN,
       extractExponentialInfo,

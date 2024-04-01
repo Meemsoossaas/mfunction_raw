@@ -28,6 +28,11 @@ typedef ExtractionCollection = ({
   TrigonometricResult trigonometricResult,
 });
 
+typedef SingleResult = ({
+  String prefix,
+  String single,
+});
+
 typedef FactorResult = ({
   String prefix,
   List<String> factors,

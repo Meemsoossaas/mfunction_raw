@@ -7,6 +7,11 @@ typedef DistanceFromZero = ({
   double max,
 });
 
+typedef FunctionFindAttemptResult = ({
+  Map<int, String> elements,
+  String newFunction,
+});
+
 typedef PreAnalysisResult = ({
   int n,
   Map<int, List<String>> organizedNMap,

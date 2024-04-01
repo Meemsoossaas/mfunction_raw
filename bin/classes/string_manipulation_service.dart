@@ -10,7 +10,11 @@ mixin class StringManipulationService {
 
   Map<int, String> getComponents(String function) {
     Iterable<Match> matches = regexps.fullFunctionRegex.allMatches(function);
-    List<String> tokens = matches.map((match) => match.group(0)!).toList();
+    List<String> tokens = matches
+        .map(
+          (match) => match.group(0)!,
+        )
+        .toList();
     return tokens.asMap();
   }
 
@@ -62,17 +66,51 @@ mixin class StringManipulationService {
     return matches.map((match) => match.group(0)!).toList();
   }
 
-  Map<int, String> findFactors(String function) {
+  FunctionFindAttemptResult findSingles(String function) {
+    var result = <String>[];
+    Iterable<RegExpMatch> matches = regexps.singleRegex.allMatches(function);
+    for (RegExpMatch match in matches) {
+      String prefix = match.group(1) ?? '+';
+      if (match.group(0)!.isTrigonometricKeyword) {
+        continue;
+      }
+      print(match.group(0)!);
+      result.add(match.group(0)!);
+    }
+    String modifiedFunction = function;
+    for (var matchResult in result) {
+      modifiedFunction = modifiedFunction.replaceAll(
+        matchResult,
+        '',
+      );
+    }
+    return (
+      newFunction: modifiedFunction,
+      elements: result.asMap(),
+    );
+  }
+
+  FunctionFindAttemptResult findFactors(String function) {
     var result = <String>[];
     Iterable<RegExpMatch> matches = regexps.factorRegex.allMatches(function);
     for (RegExpMatch match in matches) {
       String prefix = match.group(1) ?? '+';
       result.add('${prefix.isNotEmpty ? prefix : '+'}${match.group(0)!}');
     }
-    return result.asMap();
+    String modifiedFunction = function;
+    for (var matchResult in result) {
+      modifiedFunction = modifiedFunction.replaceAll(
+        matchResult,
+        '',
+      );
+    }
+    return (
+      newFunction: modifiedFunction,
+      elements: result.asMap(),
+    );
   }
 
-  Map<int, String> findFractions(String function) {
+  FunctionFindAttemptResult findFractions(String function) {
     Iterable<RegExpMatch> matches = regexps.fractionRegex.allMatches(function);
     var fractions = <int, String>{};
     int i = 0;
@@ -88,45 +126,130 @@ mixin class StringManipulationService {
       }
       i++;
     }
-    return fractions;
+    final String newFunction = function.replaceAll(
+      regexps.fractionRegex,
+      '',
+    );
+    return (
+      newFunction: newFunction,
+      elements: fractions,
+    );
   }
 
-  Map<int, String> findLogarithmicExpressions(String function) {
+  FunctionFindAttemptResult findLogarithmicExpressions(String function) {
     var result = <String>[];
     Iterable<RegExpMatch> matches =
         regexps.logarithmicRegex.allMatches(function);
     for (RegExpMatch match in matches) {
-      String prefix = match.group(1) ?? '+';
-      result.add('${prefix.isNotEmpty ? prefix : '+'}${match.group(0)!}');
+      String prefix = match.group(1) ?? match.group(5) ?? match.group(7) ?? '+';
+      late String keyword;
+      late String base;
+      if (match.group(0)!.contains(constants.log)) {
+        base = match.group(1)!;
+        keyword = constants.log;
+      } else if (match.group(0)!.contains(constants.lg)) {
+        base = '10';
+        keyword = constants.lg;
+      } else if (match.group(0)!.contains(constants.ln)) {
+        base = math.e.toString();
+        keyword = constants.ln;
+      }
+      result.add(match.group(0)!);
     }
-    return result.asMap();
+    String modifiedFunction = function;
+    for (var matchResult in result) {
+      modifiedFunction = modifiedFunction.replaceAll(
+        matchResult,
+        '',
+      );
+    }
+    return (
+      newFunction: modifiedFunction,
+      elements: result.asMap(),
+    );
   }
 
-  Map<int, String> findRootExpressions(String function) {
+  FunctionFindAttemptResult findRootExpressions(String function) {
     var result = <String>[];
     Iterable<Match> matches = regexps.rootRegex.allMatches(function);
     for (Match match in matches) {
+      /*String prefix = match.group(1) ?? match.group(3) ?? '+';
+      String innerContent = match.group(4) ?? match.group(2)!;
+      print(prefix);
+      print(innerContent);
+
+       */
+
+      print(match.group(0)!);
       result.add(match.group(0)!);
     }
-    return result.asMap();
+    String modifiedFunction = function;
+    for (var matchResult in result) {
+      modifiedFunction = modifiedFunction.replaceAll(
+        matchResult,
+        '',
+      );
+    }
+    return (
+      newFunction: modifiedFunction,
+      elements: result.asMap(),
+    );
   }
 
-  Map<int, String> findExponentialExpressions(String function) {
+  FunctionFindAttemptResult findExponentialExpressions(String function) {
     var result = <String>[];
     Iterable<Match> matches = regexps.exponentialRegex.allMatches(function);
     for (Match match in matches) {
       result.add(match.group(0)!);
     }
-    return result.asMap();
+    String modifiedFunction = function;
+    for (var matchResult in result) {
+      modifiedFunction = modifiedFunction.replaceAll(
+        matchResult,
+        '',
+      );
+    }
+    return (
+      newFunction: modifiedFunction,
+      elements: result.asMap(),
+    );
   }
 
-  Map<int, String> findTrigonometricExpression(String function) {
+  FunctionFindAttemptResult findTrigonometricExpression(String function) {
     var result = <String>[];
     Iterable<Match> matches = regexps.trigonometricRegex.allMatches(function);
     for (Match match in matches) {
-      result.add(match.group(0)!);
+      result.add('${match.group(0)!})');
     }
-    return result.asMap();
+    String modifiedFunction = function;
+    for (var matchResult in result) {
+      modifiedFunction = modifiedFunction.replaceAll(
+        matchResult,
+        '',
+      );
+    }
+    return (
+      newFunction: modifiedFunction,
+      elements: result.asMap(),
+    );
+  }
+
+  FunctionExtractionResult<SingleResult> extractSingleInfo(
+    Map<int, String> singles,
+  ) {
+    var result = <int, SingleResult>{};
+    singles.forEach(
+      (key, value) {
+        String prefix = value.first;
+        String single =
+            value.length == 2 ? value.last : value.substring(1, value.length);
+        result[key] = (
+          prefix: prefix,
+          single: single,
+        );
+      },
+    );
+    return result;
   }
 
   FunctionExtractionResult<FactorResult> extractFactorInfo(
@@ -182,14 +305,16 @@ mixin class StringManipulationService {
       (key, value) {
         Match? match = regexps.logarithmicRegex.firstMatch(value);
         if (match != null) {
-          String prefix = match.group(1)!;
-          String logarithmicKeyword = match.group(2)!;
-          String base;
+          String prefix =
+              match.group(1) ?? match.group(5) ?? match.group(8) ?? '+';
+          String logarithmicKeyword =
+              match.group(2) ?? match.group(6) ?? match.group(9)!;
+          late String base;
           print(prefix);
           print(logarithmicKeyword);
           if (logarithmicKeyword == 'lg') {
             base = "10";
-            String logarithmicResult = match.group(5)!;
+            String logarithmicResult = match.group(10)!;
             result[key] = (
               prefix: prefix,
               base: base,
@@ -197,7 +322,7 @@ mixin class StringManipulationService {
             );
           } else if (logarithmicKeyword == 'ln') {
             base = math.e.toString();
-            String logarithmicResult = match.group(6)!;
+            String logarithmicResult = match.group(7)!;
             result[key] = (
               prefix: prefix,
               base: base,
@@ -277,16 +402,16 @@ mixin class StringManipulationService {
       (key, value) {
         Iterable<Match> matches = regexps.trigonometricRegex.allMatches(value);
         for (Match match in matches) {
-          String prefix = match.group(1)!;
-          String keyword = match.group(2) ?? match.group(6)!;
-          String exponent = match.group(3) ?? "1";
-          String innerContent = match.group(4) ?? match.group(7)!;
+          String prefix = match.group(1) ?? '+';
+          String keyword = match.group(2)!;
+          String innerContent = match.group(3)!;
           result[key] = (
             prefix: prefix,
             keyword: keyword,
-            exponent: exponent,
+            exponent: '1',
             innerContent: innerContent,
           );
+          print(result[key]);
         }
       },
     );

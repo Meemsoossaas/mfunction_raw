@@ -1,4 +1,3 @@
-import 'package:equations/equations.dart';
 import 'package:math_expressions/math_expressions.dart';
 
 void main() {

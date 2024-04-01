@@ -11,6 +11,7 @@ typedef MathOperatorResult = ({
 });
 
 typedef StringManipulationSummary = ({
+FunctionManipulation<SingleResult> singleResult,
   FunctionManipulation<FactorResult> factorResult,
   FunctionManipulation<FractionResult> fractionResult,
   FunctionManipulation<LogarithmicResult> logarithmicResult,

@@ -11,30 +11,54 @@ RegExp fullFunctionRegex = RegExp(
     r'([()])' // Matches parentheses
     );
 
-RegExp alphabetRegex = RegExp(r'[a-z]+');
+RegExp alphabetRegex = RegExp(
+  r'[a-z]+',
+);
 
-RegExp integerRegex = RegExp(r'\d+');
+RegExp integerRegex = RegExp(
+  r'\d+',
+);
 
-RegExp decimalRegex = RegExp(r'^-?\d+(\.\d+)?$');
+RegExp decimalRegex = RegExp(
+  r'^-?\d+(\.\d+)?$',
+);
 
-RegExp bracketRegex = RegExp(r'\([^()]*\)');
+RegExp bracketRegex = RegExp(
+  r'\([^()]*\)',
+);
 
-RegExp factorRegex = RegExp(r'([-+])?\(([^\/^]*)\)');
+RegExp singleRegex = RegExp(
+  r'([-+])?\s*\b(?:\d+|[a-zπi])',
+);
 
-RegExp extractFactorRegex = RegExp(r'([0-9]|[a-z]|[π]+)');
+RegExp factorRegex = RegExp(
+  r'([-+]?(\d+|[a-z]|[(][^()]*[)]))?\(([^()]*)\)(?![^()]*\))',
+);
 
-RegExp fractionRegex = RegExp(r'([+-]?)(\(([a-z0-9]+)/([a-z0-9]+)\))');
+RegExp extractFactorRegex = RegExp(
+  r'([0-9]|[a-z]|[π]+)',
+);
+
+RegExp fractionRegex = RegExp(
+  r'([+-]?)(\(([a-z0-9+\-*/^π]+)/([a-z0-9+\-*/^π]+)\))',
+);
 
 RegExp logarithmicRegex = RegExp(
-  r'([-+]?)(log|lg|ln)\((\d*)\)\(([a-z0-9]+)\)|lg\(([a-z0-9]+)\)|ln\(([a-z0-9]+)\)',
+  r'([+-]?)(log)\(([0-9]+)\)\(([a-z0-9+\-*/^π]+)\)|([+-]?)(ln)\(([a-z0-9+\-*/^π]+)\)|([+-]?)(lg)\(([a-z0-9+\-*/^π]+)\)',
 );
 
 RegExp rootRegex = RegExp(
-  r'([-+]?)sqrt\(([a-z0-9]+)\)|sqrt\((\d+)\)\(([a-z0-9]+)\)',
+  r'([+-]?)sqrt\((.*?)\)(?:\((.*?)\))?',
 );
 
-RegExp exponentialRegex = RegExp(r'([-+]?)\([^()]+?\^[^()]+?\)');
+RegExp exponentialRegex = RegExp(
+  r'([-+]?)\([^()]+?\^[^()]+?\)',
+);
 
 RegExp trigonometricRegex = RegExp(
-  r'([-+]?)(sin|cos|tan)\((\d+)?\)\(([^()]+)?\)|((sin|cos|tan)\(([^()]+)?\))',
+    r'([+-]?)(sin|cos|tan)\(([^()]*(\([^()]*\)[^()]*)*)(\(([^()]*(\([^()]*\)[^()]*)*)\))??'
+);
+
+RegExp trigonometricRegex2 = RegExp(
+  r'([-+])?\b(sin|cos|tan)\((\d+)?\)\(([^()]+)?\)|((sin|cos|tan)\(([^()]*)?\))',
 );

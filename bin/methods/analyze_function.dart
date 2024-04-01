@@ -1,88 +1,115 @@
 part of 'methods.dart';
 
 Future<void> analyzeFunction(String function) async {
-  final StringManipulationService service = StringManipulationService();
-  final FunctionConvertService convertService = FunctionConvertService();
+  final StringManipulationService service = StringManipulationService.instance;
+  final FunctionConvertService convertService = FunctionConvertService.instance;
   final func = function.removeWhitespace();
   if (func.isNotAFunction) {
-    throw Exception();
+    throw AnalyzeFunctionException(0);
   }
   print(func);
-  MathFunction mathFunction = MathFunction(func);
-  final factors = service.findFactors(func);
+  // MathFunction mathFunction = MathFunction(func);
   final fractions = service.findFractions(func);
-  final logarithmicExpressions = service.findLogarithmicExpressions(func);
-  final rootExpressions = service.findRootExpressions(func);
-  final exponentialExpressions = service.findExponentialExpressions(func);
-  final trigonometricExpressions = service.findTrigonometricExpression(func);
-  print(factors);
-  print(fractions);
-  print(logarithmicExpressions);
-  print(rootExpressions);
-  print(exponentialExpressions);
-  print(trigonometricExpressions);
-
-  final extractFactorInfo = service.extractFactorInfo(factors);
-  final extractFractionInfo = service.extractFractionInfo(fractions);
-  final extractLogarithmicInfo =
-  service.extractLogarithmicInfo(logarithmicExpressions);
-  final extractRootInfo = service.extractRootInfo(rootExpressions);
-  final extractExponentialInfo =
-  service.extractExponentialInfo(exponentialExpressions);
-  final extractionTrigonometricInfo =
-  service.extractTrigonometricInfo(trigonometricExpressions);
-
-  print(extractFactorInfo);
-  print(extractFractionInfo);
-  print(extractLogarithmicInfo);
-  print(extractRootInfo);
-  print(extractExponentialInfo);
-  print(extractionTrigonometricInfo);
-
-  var getMathOperations = mathFunction.componentTypes.values.where(
-        (element) => element.type == ComponentType.mathOperator,
+  print('Fractions: ${fractions.newFunction}');
+  final logarithmicExpressions = service.findLogarithmicExpressions(
+    fractions.newFunction,
   );
+  print('Logarithmic expressions: ${logarithmicExpressions.newFunction}');
+  final rootExpressions = service.findRootExpressions(
+    logarithmicExpressions.newFunction,
+  );
+  print('Root expressions: ${rootExpressions.newFunction}');
+  final exponentialExpressions = service.findExponentialExpressions(
+    rootExpressions.newFunction,
+  );
+  print('Exponential expressions: ${exponentialExpressions.newFunction}');
+  final trigonometricExpressions = service.findTrigonometricExpression(
+    exponentialExpressions.newFunction,
+  );
+  print('Trigonometric expressions: ${trigonometricExpressions.newFunction}');
+  final factors = service.findFactors(
+    trigonometricExpressions.newFunction,
+  );
+  print('Factors: ${factors.newFunction}');
+  final singles = service.findSingles(
+    factors.newFunction,
+  );
+  print('Singles: ${singles.hashCode}');
+
+  final extractSingleInfo = service.extractSingleInfo(
+    singles.elements,
+  );
+  final extractFactorInfo = service.extractFactorInfo(
+    factors.elements,
+  );
+  final extractFractionInfo = service.extractFractionInfo(
+    fractions.elements,
+  );
+  final extractLogarithmicInfo = service.extractLogarithmicInfo(
+    logarithmicExpressions.elements,
+  );
+  final extractRootInfo = service.extractRootInfo(
+    rootExpressions.elements,
+  );
+  final extractExponentialInfo = service.extractExponentialInfo(
+    exponentialExpressions.elements,
+  );
+  final extractionTrigonometricInfo = service.extractTrigonometricInfo(
+    trigonometricExpressions.elements,
+  );
+
+  print('ExtractSingleInfo: $extractSingleInfo');
+  print('ExtractFactorInfo: $extractFactorInfo');
+  print('ExtractFractionInfo: $extractFractionInfo');
+  print('ExtractLogarithmicInfo: $extractLogarithmicInfo');
+  print('ExtractRootInfo: $extractRootInfo');
+  print('ExtractExponentialInfo: $extractExponentialInfo');
+  print('ExtractionTrigonometricInfo: $extractionTrigonometricInfo');
+
   var mathOperators = <MathOperatorResult>[];
   for (var operation in mathOperators) {
     mathOperators.add(
       (
-      index: operation.index,
-      mathOperator: operation.mathOperator,
+        index: operation.index,
+        mathOperator: operation.mathOperator,
       ),
     );
   }
+
   String convertedFunction = await convertService.convert(
     (
-    factorResult: (
-    elements: factors,
-    extractionInfo: extractFactorInfo,
-    ),
-    fractionResult: (
-    elements: fractions,
-    extractionInfo: extractFractionInfo,
-    ),
-    logarithmicResult: (
-    elements: logarithmicExpressions,
-    extractionInfo: extractLogarithmicInfo,
-    ),
-    rootResult: (
-    elements: rootExpressions,
-    extractionInfo: extractRootInfo,
-    ),
-    exponentialResult: (
-    elements: exponentialExpressions,
-    extractionInfo: extractExponentialInfo,
-    ),
-    trigonometricResult: (
-    elements: trigonometricExpressions,
-    extractionInfo: extractionTrigonometricInfo,
-    ),
+      singleResult: (
+        elements: singles.elements,
+        extractionInfo: extractSingleInfo,
+      ),
+      factorResult: (
+        elements: factors.elements,
+        extractionInfo: extractFactorInfo,
+      ),
+      fractionResult: (
+        elements: fractions.elements,
+        extractionInfo: extractFractionInfo,
+      ),
+      logarithmicResult: (
+        elements: logarithmicExpressions.elements,
+        extractionInfo: extractLogarithmicInfo,
+      ),
+      rootResult: (
+        elements: rootExpressions.elements,
+        extractionInfo: extractRootInfo,
+      ),
+      exponentialResult: (
+        elements: exponentialExpressions.elements,
+        extractionInfo: extractExponentialInfo,
+      ),
+      trigonometricResult: (
+        elements: trigonometricExpressions.elements,
+        extractionInfo: extractionTrigonometricInfo,
+      ),
     ),
     mathOperators: mathOperators,
   );
-
-  print(convertedFunction);
-
+  print('Converted function: $convertedFunction');
   _startAnalysis(
     convertedFunction,
     extractFractionInfo,
@@ -93,20 +120,21 @@ Future<void> analyzeFunction(String function) async {
   );
 }
 
-void _startAnalysis(String function,
-    FunctionExtractionResult<FractionResult> extractFractionInfo,
-    FunctionExtractionResult<LogarithmicResult> extractLogarithmicInfo,
-    FunctionExtractionResult<RootResult> extractRootInfo,
-    FunctionExtractionResult<ExponentialResult> extractExponentialInfo,
-    FunctionExtractionResult<TrigonometricResult> extractionTrigonometricInfo, [
-      AnalysisContext context = const AnalysisContext.currentDefault(),
-    ]) {
+void _startAnalysis(
+  String function,
+  FunctionExtractionResult<FractionResult> extractFractionInfo,
+  FunctionExtractionResult<LogarithmicResult> extractLogarithmicInfo,
+  FunctionExtractionResult<RootResult> extractRootInfo,
+  FunctionExtractionResult<ExponentialResult> extractExponentialInfo,
+  FunctionExtractionResult<TrigonometricResult> extractionTrigonometricInfo, [
+  AnalysisContext context = const AnalysisContext.currentDefault(),
+]) {
   final MathAnalysisService service = MathAnalysisService();
   Parser p = Parser();
-  final Expression simplifiedFunction = p.parse(function).simplify();
+  final Expression simplifiedFunction = p.parse(function);
   service.operate(
     context,
-    simplifiedFunction,
+    simplifiedFunction.simplify(),
     extractFractionInfo,
     extractLogarithmicInfo,
     extractRootInfo,

@@ -1,6 +1,39 @@
 part of 'extensions.dart';
 
 extension StringFunctionExtensions on String {
+  String getComponents() {
+    if (isAFunction) {
+      var buffer = StringBuffer();
+      for (var positiveChar in split('+')) {
+        buffer.write(
+          buffer.isEmpty ? positiveChar : '+$positiveChar',
+        );
+      }
+      for (var positiveChar in split('+')) {
+        buffer.write(
+          '-$positiveChar',
+        );
+      }
+      return buffer.toString();
+    } else {
+      return '';
+    }
+  }
+
+  String removeAtIndex(int index) {
+    var buffer = StringBuffer();
+    final charList = split('');
+    for (var char in charList) {
+      if (charList[index] == char) {
+        continue;
+      }
+      buffer.write(
+        char,
+      );
+    }
+    return buffer.toString();
+  }
+
   String trimFunction([bool precise = false]) {
     switch (precise) {
       case true:

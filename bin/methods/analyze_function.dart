@@ -9,29 +9,29 @@ Future<void> analyzeFunction(String function) async {
   }
   print(func);
   // MathFunction mathFunction = MathFunction(func);
-  final fractions = service.findFractions(func);
+  final fractions = await service.findFractions(func);
   print('Fractions: ${fractions.newFunction}');
-  final logarithmicExpressions = service.findLogarithmicExpressions(
+  final logarithmicExpressions = await service.findLogarithmicExpressions(
     fractions.newFunction,
   );
   print('Logarithmic expressions: ${logarithmicExpressions.newFunction}');
-  final rootExpressions = service.findRootExpressions(
+  final rootExpressions = await service.findRootExpressions(
     logarithmicExpressions.newFunction,
   );
   print('Root expressions: ${rootExpressions.newFunction}');
-  final exponentialExpressions = service.findExponentialExpressions(
+  final exponentialExpressions = await service.findExponentialExpressions(
     rootExpressions.newFunction,
   );
   print('Exponential expressions: ${exponentialExpressions.newFunction}');
-  final trigonometricExpressions = service.findTrigonometricExpression(
+  final trigonometricExpressions = await service.findTrigonometricExpression(
     exponentialExpressions.newFunction,
   );
   print('Trigonometric expressions: ${trigonometricExpressions.newFunction}');
-  final factors = service.findFactors(
+  final factors = await service.findFactors(
     trigonometricExpressions.newFunction,
   );
   print('Factors: ${factors.newFunction}');
-  final singles = service.findSingles(
+  final singles = await service.findSingles(
     factors.newFunction,
   );
   print('Singles: ${singles.hashCode}');
@@ -107,11 +107,12 @@ Future<void> analyzeFunction(String function) async {
         extractionInfo: extractionTrigonometricInfo,
       ),
     ),
-    mathOperators: mathOperators,
   );
   print('Converted function: $convertedFunction');
   _startAnalysis(
     convertedFunction,
+    extractSingleInfo,
+    extractFactorInfo,
     extractFractionInfo,
     extractLogarithmicInfo,
     extractRootInfo,
@@ -122,6 +123,8 @@ Future<void> analyzeFunction(String function) async {
 
 void _startAnalysis(
   String function,
+  FunctionExtractionResult<SingleResult> extractSingleInfo,
+  FunctionExtractionResult<FactorResult> extractFactorInfo,
   FunctionExtractionResult<FractionResult> extractFractionInfo,
   FunctionExtractionResult<LogarithmicResult> extractLogarithmicInfo,
   FunctionExtractionResult<RootResult> extractRootInfo,
@@ -135,6 +138,8 @@ void _startAnalysis(
   service.operate(
     context,
     simplifiedFunction.simplify(),
+    extractSingleInfo,
+    extractFactorInfo,
     extractFractionInfo,
     extractLogarithmicInfo,
     extractRootInfo,

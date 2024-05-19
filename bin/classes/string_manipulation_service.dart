@@ -1,6 +1,9 @@
 part of 'classes.dart';
 
 mixin class StringManipulationService {
+  static final FunctionConvertService functionConvertService =
+      FunctionConvertService.instance;
+
   static final StringManipulationService instance =
       StringManipulationService._internal();
 
@@ -66,7 +69,7 @@ mixin class StringManipulationService {
     return matches.map((match) => match.group(0)!).toList();
   }
 
-  FunctionFindAttemptResult findSingles(String function) {
+  Future<FunctionFindAttemptResult> findSingles(String function) async {
     var result = <String>[];
     Iterable<RegExpMatch> matches = regexps.singleRegex.allMatches(function);
     for (RegExpMatch match in matches) {
@@ -74,8 +77,9 @@ mixin class StringManipulationService {
       if (match.group(0)!.isTrigonometricKeyword) {
         continue;
       }
-      print(match.group(0)!);
-      result.add(match.group(0)!);
+      result.add(
+        match.group(0)!,
+      );
     }
     String modifiedFunction = function;
     for (var matchResult in result) {
@@ -90,12 +94,14 @@ mixin class StringManipulationService {
     );
   }
 
-  FunctionFindAttemptResult findFactors(String function) {
+  Future<FunctionFindAttemptResult> findFactors(String function) async {
     var result = <String>[];
     Iterable<RegExpMatch> matches = regexps.factorRegex.allMatches(function);
     for (RegExpMatch match in matches) {
       String prefix = match.group(1) ?? '+';
-      result.add('${prefix.isNotEmpty ? prefix : '+'}${match.group(0)!}');
+      result.add(
+        '${prefix.isNotEmpty ? prefix : '+'}${match.group(0)!}',
+      );
     }
     String modifiedFunction = function;
     for (var matchResult in result) {
@@ -110,10 +116,9 @@ mixin class StringManipulationService {
     );
   }
 
-  FunctionFindAttemptResult findFractions(String function) {
+  Future<FunctionFindAttemptResult> findFractions(String function) async {
     Iterable<RegExpMatch> matches = regexps.fractionRegex.allMatches(function);
-    var fractions = <int, String>{};
-    int i = 0;
+    var fractions = <String>[];
     for (RegExpMatch match in matches) {
       String prefix = match.group(1) ?? '+';
       String fraction = match.group(2)!;
@@ -122,9 +127,10 @@ mixin class StringManipulationService {
           fraction.contains('*') ||
           fraction.contains('/') ||
           fraction.contains('^')) {
-        fractions[i] = '${prefix.isNotEmpty ? prefix : '+'}$fraction';
+        fractions.add(
+          '${prefix.isNotEmpty ? prefix : '+'}$fraction',
+        );
       }
-      i++;
     }
     final String newFunction = function.replaceAll(
       regexps.fractionRegex,
@@ -132,11 +138,13 @@ mixin class StringManipulationService {
     );
     return (
       newFunction: newFunction,
-      elements: fractions,
+      elements: fractions.asMap(),
     );
   }
 
-  FunctionFindAttemptResult findLogarithmicExpressions(String function) {
+  Future<FunctionFindAttemptResult> findLogarithmicExpressions(
+    String function,
+  ) async {
     var result = <String>[];
     Iterable<RegExpMatch> matches =
         regexps.logarithmicRegex.allMatches(function);
@@ -154,7 +162,9 @@ mixin class StringManipulationService {
         base = math.e.toString();
         keyword = constants.ln;
       }
-      result.add(match.group(0)!);
+      result.add(
+        match.group(0)!,
+      );
     }
     String modifiedFunction = function;
     for (var matchResult in result) {
@@ -169,19 +179,19 @@ mixin class StringManipulationService {
     );
   }
 
-  FunctionFindAttemptResult findRootExpressions(String function) {
+  Future<FunctionFindAttemptResult> findRootExpressions(String function) async {
     var result = <String>[];
     Iterable<Match> matches = regexps.rootRegex.allMatches(function);
     for (Match match in matches) {
-      /*String prefix = match.group(1) ?? match.group(3) ?? '+';
+      /*
+      String prefix = match.group(1) ?? match.group(3) ?? '+';
       String innerContent = match.group(4) ?? match.group(2)!;
       print(prefix);
       print(innerContent);
-
-       */
-
-      print(match.group(0)!);
-      result.add(match.group(0)!);
+      */
+      result.add(
+        match.group(0)!,
+      );
     }
     String modifiedFunction = function;
     for (var matchResult in result) {
@@ -196,11 +206,15 @@ mixin class StringManipulationService {
     );
   }
 
-  FunctionFindAttemptResult findExponentialExpressions(String function) {
+  Future<FunctionFindAttemptResult> findExponentialExpressions(
+    String function,
+  ) async {
     var result = <String>[];
     Iterable<Match> matches = regexps.exponentialRegex.allMatches(function);
     for (Match match in matches) {
-      result.add(match.group(0)!);
+      result.add(
+        match.group(0)!,
+      );
     }
     String modifiedFunction = function;
     for (var matchResult in result) {
@@ -215,11 +229,15 @@ mixin class StringManipulationService {
     );
   }
 
-  FunctionFindAttemptResult findTrigonometricExpression(String function) {
+  Future<FunctionFindAttemptResult> findTrigonometricExpression(
+    String function,
+  ) async {
     var result = <String>[];
     Iterable<Match> matches = regexps.trigonometricRegex.allMatches(function);
     for (Match match in matches) {
-      result.add('${match.group(0)!})');
+      result.add(
+        '${match.group(0)!})',
+      );
     }
     String modifiedFunction = function;
     for (var matchResult in result) {
@@ -241,8 +259,12 @@ mixin class StringManipulationService {
     singles.forEach(
       (key, value) {
         String prefix = value.first;
-        String single =
-            value.length == 2 ? value.last : value.substring(1, value.length);
+        String single = value.length == 2
+            ? value.last
+            : value.substring(
+                1,
+                value.length,
+              );
         result[key] = (
           prefix: prefix,
           single: single,
@@ -260,12 +282,18 @@ mixin class StringManipulationService {
       (key, value) {
         var factors = <String>[];
         String prefix = value.first;
-        String realFactors = value.substring(2, value.length - 1);
-        Iterable<RegExpMatch> matches =
-            regexps.extractFactorRegex.allMatches(realFactors);
+        String realFactors = value.substring(
+          2,
+          value.length - 1,
+        );
+        Iterable<RegExpMatch> matches = regexps.extractFactorRegex.allMatches(
+          realFactors,
+        );
         for (var match in matches) {
           var coefficient = match.group(0)!;
-          factors.add(coefficient);
+          factors.add(
+            coefficient,
+          );
         }
         result[key] = (
           prefix: prefix,

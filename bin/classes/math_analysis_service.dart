@@ -14,6 +14,8 @@ mixin class MathAnalysisService {
   void operate(
     AnalysisContext context,
     Expression function,
+    FunctionExtractionResult<SingleResult> extractSingleInfo,
+    FunctionExtractionResult<FactorResult> extractFactorResult,
     FunctionExtractionResult<FractionResult> extractFractionInfo,
     FunctionExtractionResult<LogarithmicResult> extractLogarithmicInfo,
     FunctionExtractionResult<RootResult> extractRootInfo,
@@ -23,6 +25,8 @@ mixin class MathAnalysisService {
     await _operate(
       context,
       function,
+      extractSingleInfo,
+      extractFactorResult,
       extractFractionInfo,
       extractLogarithmicInfo,
       extractRootInfo,
@@ -34,6 +38,8 @@ mixin class MathAnalysisService {
   Future<AnalysisResult> _operate(
     AnalysisContext context,
     Expression function,
+    FunctionExtractionResult<SingleResult> extractSingleInfo,
+    FunctionExtractionResult<FactorResult> extractFactorInfo,
     FunctionExtractionResult<FractionResult> extractFractionInfo,
     FunctionExtractionResult<LogarithmicResult> extractLogarithmicInfo,
     FunctionExtractionResult<RootResult> extractRootInfo,
@@ -44,6 +50,8 @@ mixin class MathAnalysisService {
     await _preAnalysis(
       context,
       function,
+      extractSingleInfo,
+      extractFactorInfo,
       extractFractionInfo,
       extractLogarithmicInfo,
       extractRootInfo,
@@ -58,6 +66,8 @@ mixin class MathAnalysisService {
     await _definitionSet(
       context,
       function,
+      extractSingleInfo,
+      extractFactorInfo,
       extractFractionInfo,
       extractLogarithmicInfo,
       extractRootInfo,
@@ -72,6 +82,8 @@ mixin class MathAnalysisService {
     await _setOfValues(
       context,
       function,
+      extractSingleInfo,
+      extractFactorInfo,
       extractFractionInfo,
       extractLogarithmicInfo,
       extractRootInfo,
@@ -86,6 +98,8 @@ mixin class MathAnalysisService {
     await _asymptotes(
       context,
       function,
+      extractSingleInfo,
+      extractFactorInfo,
       extractFractionInfo,
       extractLogarithmicInfo,
       extractRootInfo,
@@ -102,6 +116,8 @@ mixin class MathAnalysisService {
     await _limits(
       context,
       function,
+      extractSingleInfo,
+      extractFactorInfo,
       extractFractionInfo,
       extractLogarithmicInfo,
       extractRootInfo,
@@ -116,6 +132,8 @@ mixin class MathAnalysisService {
     await _zeroPoints(
       context,
       function,
+      extractSingleInfo,
+      extractFactorInfo,
       extractFractionInfo,
       extractLogarithmicInfo,
       extractRootInfo,
@@ -130,6 +148,8 @@ mixin class MathAnalysisService {
     await _derivation(
       context,
       function,
+      extractSingleInfo,
+      extractFactorInfo,
       extractFractionInfo,
       extractLogarithmicInfo,
       extractRootInfo,
@@ -144,6 +164,8 @@ mixin class MathAnalysisService {
     await _monotony(
       context,
       function,
+      extractSingleInfo,
+      extractFactorInfo,
       extractFractionInfo,
       extractLogarithmicInfo,
       extractRootInfo,
@@ -158,6 +180,8 @@ mixin class MathAnalysisService {
     await _slope(
       context,
       function,
+      extractSingleInfo,
+      extractFactorInfo,
       extractFractionInfo,
       extractLogarithmicInfo,
       extractRootInfo,
@@ -172,6 +196,8 @@ mixin class MathAnalysisService {
     await _extremePoints(
       context,
       function,
+      extractSingleInfo,
+      extractFactorInfo,
       extractFractionInfo,
       extractLogarithmicInfo,
       extractRootInfo,
@@ -186,6 +212,8 @@ mixin class MathAnalysisService {
     await _curvature(
       context,
       function,
+      extractSingleInfo,
+      extractFactorInfo,
       extractFractionInfo,
       extractLogarithmicInfo,
       extractRootInfo,
@@ -200,6 +228,8 @@ mixin class MathAnalysisService {
     await _turningPoints(
       context,
       function,
+      extractSingleInfo,
+      extractFactorInfo,
       extractFractionInfo,
       extractLogarithmicInfo,
       extractRootInfo,
@@ -214,6 +244,8 @@ mixin class MathAnalysisService {
     await _integral(
       context,
       function,
+      extractSingleInfo,
+      extractFactorInfo,
       extractFractionInfo,
       extractLogarithmicInfo,
       extractRootInfo,
@@ -231,6 +263,8 @@ mixin class MathAnalysisService {
   Future<PreAnalysisResult> _preAnalysis(
     AnalysisContext context,
     Expression function,
+    FunctionExtractionResult<SingleResult> extractSingleInfo,
+    FunctionExtractionResult<FactorResult> extractFactorInfo,
     FunctionExtractionResult<FractionResult> extractFractionInfo,
     FunctionExtractionResult<LogarithmicResult> extractLogarithmicInfo,
     FunctionExtractionResult<RootResult> extractRootInfo,
@@ -255,11 +289,13 @@ mixin class MathAnalysisService {
       );
     }
     int parsedN = int.parse(
-      n!.isVariable
-          ? '1'
-          : (n.isNumber || n.isDecimal)
-              ? n
-              : '1',
+      n != null
+          ? (n.isVariable
+              ? '1'
+              : (n.isNumber || n.isDecimal)
+                  ? n
+                  : '1')
+          : '1',
     );
     var organizedNMap = _getBaseAndPower(
       parsedN,
@@ -286,7 +322,7 @@ mixin class MathAnalysisService {
     if (n > 0 || n < 0) {
       extractInfo.forEach(
         (key, value) {
-          var power = (value).power;
+          var power = value.power;
           if (power.isNumber && !power.isDecimal) {
             if (result[int.parse(power)] == null) {
               result[int.parse(power)] = <String>[];
@@ -312,6 +348,8 @@ mixin class MathAnalysisService {
   Future<DefinitionSetResult> _definitionSet(
     AnalysisContext context,
     Expression function,
+    FunctionExtractionResult<SingleResult> extractSingleInfo,
+    FunctionExtractionResult<FactorResult> extractFactorInfo,
     FunctionExtractionResult<FractionResult> extractFractionInfo,
     FunctionExtractionResult<LogarithmicResult> extractLogarithmicInfo,
     FunctionExtractionResult<RootResult> extractRootInfo,
@@ -335,14 +373,18 @@ mixin class MathAnalysisService {
     var uniqueLogarithmicInvalidNumbers = <double>{};
     extractLogarithmicInfo.forEach(
       (key, value) {
-        String resultValue = value.result;
-        Newton n = Newton(
-          function: resultValue,
-          x0: defaultGuess,
-        );
-        var solutions = n.solve();
-        result[key] = solutions.guesses;
-        uniqueLogarithmicInvalidNumbers.addAll(solutions.guesses);
+        try {
+          String resultValue = value.result;
+          Newton n = Newton(
+            function: resultValue,
+            x0: defaultGuess,
+          );
+          var solutions = n.solve();
+          result[key] = solutions.guesses;
+          uniqueLogarithmicInvalidNumbers.addAll(solutions.guesses);
+        } on NonlinearException catch (_) {
+          print('There is no fitting variable');
+        } catch (_) {}
       },
     );
     var uniqueRootInvalidNumbers = <double>{};
@@ -384,6 +426,8 @@ mixin class MathAnalysisService {
   Future<AsymptotesResult> _asymptotes(
     AnalysisContext context,
     Expression function,
+    FunctionExtractionResult<SingleResult> extractSingleInfo,
+    FunctionExtractionResult<FactorResult> extractFactorInfo,
     FunctionExtractionResult<FractionResult> extractFractionInfo,
     FunctionExtractionResult<LogarithmicResult> extractLogarithmicInfo,
     FunctionExtractionResult<RootResult> extractRootInfo,
@@ -391,19 +435,40 @@ mixin class MathAnalysisService {
     FunctionExtractionResult<TrigonometricResult> extractionTrigonometricInfo, {
     required DefinitionSetResult definitionSetResult,
   }) async {
-    var horizontalAsymptotes = <double>[];
+    var service = MathAnalysisService();
+    StringBuffer numeratorBuffer = StringBuffer();
+    extractFractionInfo.forEach(
+      (key, value) {
+        var numerator = value.numerator;
+        var denominator = value.denominator;
+      },
+    );
+    // Get Vertical Asymptotes
     var verticalAsymptotes = <double>[];
     var obliqueAsymptotes = <String>[];
     var curvedAsymptotes = <String>[];
-    extractFractionInfo.forEach(
-      (key, value) {},
-    );
     return (
-      horizontalAsymptotes: horizontalAsymptotes,
+      horizontalAsymptotes: definitionSetResult.invalidNumbers.toList(
+        growable: false,
+      ),
       verticalAsymptotes: verticalAsymptotes,
       obliqueAsymptotes: obliqueAsymptotes,
       curvedAsymptotes: curvedAsymptotes,
     );
+  }
+
+  Future<String> factorizeFractions(
+    FractionResult result,
+  ) async {
+    var numerator = result.numerator;
+    var denominator = result.denominator;
+    if (numerator == denominator) {
+      return denominator;
+    } else {
+      Parser p = Parser();
+      Expression input = p.parse('($numerator) * ($denominator)');
+    }
+    throw UnimplementedError();
   }
 
   //
@@ -411,6 +476,8 @@ mixin class MathAnalysisService {
   Future<SetOfValuesResult> _setOfValues(
     AnalysisContext context,
     Expression function,
+    FunctionExtractionResult<SingleResult> extractSingleInfo,
+    FunctionExtractionResult<FactorResult> extractFactorInfo,
     FunctionExtractionResult<FractionResult> extractFractionInfo,
     FunctionExtractionResult<LogarithmicResult> extractLogarithmicInfo,
     FunctionExtractionResult<RootResult> extractRootInfo,
@@ -423,6 +490,8 @@ mixin class MathAnalysisService {
   Future<LimitsResult> _limits(
     AnalysisContext context,
     Expression function,
+    FunctionExtractionResult<SingleResult> extractSingleInfo,
+    FunctionExtractionResult<FactorResult> extractFactorInfo,
     FunctionExtractionResult<FractionResult> extractFractionInfo,
     FunctionExtractionResult<LogarithmicResult> extractLogarithmicInfo,
     FunctionExtractionResult<RootResult> extractRootInfo,
@@ -435,6 +504,8 @@ mixin class MathAnalysisService {
   Future<ZeroPointsResult> _zeroPoints(
     AnalysisContext context,
     Expression function,
+    FunctionExtractionResult<SingleResult> extractSingleInfo,
+    FunctionExtractionResult<FactorResult> extractFactorInfo,
     FunctionExtractionResult<FractionResult> extractFractionInfo,
     FunctionExtractionResult<LogarithmicResult> extractLogarithmicInfo,
     FunctionExtractionResult<RootResult> extractRootInfo,
@@ -447,6 +518,8 @@ mixin class MathAnalysisService {
   Future<DerivationResult> _derivation(
     AnalysisContext context,
     Expression function,
+    FunctionExtractionResult<SingleResult> extractSingleInfo,
+    FunctionExtractionResult<FactorResult> extractFactorInfo,
     FunctionExtractionResult<FractionResult> extractFractionInfo,
     FunctionExtractionResult<LogarithmicResult> extractLogarithmicInfo,
     FunctionExtractionResult<RootResult> extractRootInfo,
@@ -459,6 +532,8 @@ mixin class MathAnalysisService {
   Future<MonotonyResult> _monotony(
     AnalysisContext context,
     Expression function,
+    FunctionExtractionResult<SingleResult> extractSingleInfo,
+    FunctionExtractionResult<FactorResult> extractFactorInfo,
     FunctionExtractionResult<FractionResult> extractFractionInfo,
     FunctionExtractionResult<LogarithmicResult> extractLogarithmicInfo,
     FunctionExtractionResult<RootResult> extractRootInfo,
@@ -471,6 +546,8 @@ mixin class MathAnalysisService {
   Future<SlopeResult> _slope(
     AnalysisContext context,
     Expression function,
+    FunctionExtractionResult<SingleResult> extractSingleInfo,
+    FunctionExtractionResult<FactorResult> extractFactorInfo,
     FunctionExtractionResult<FractionResult> extractFractionInfo,
     FunctionExtractionResult<LogarithmicResult> extractLogarithmicInfo,
     FunctionExtractionResult<RootResult> extractRootInfo,
@@ -483,6 +560,8 @@ mixin class MathAnalysisService {
   Future<ExtremePointsResult> _extremePoints(
     AnalysisContext context,
     Expression function,
+    FunctionExtractionResult<SingleResult> extractSingleInfo,
+    FunctionExtractionResult<FactorResult> extractFactorInfo,
     FunctionExtractionResult<FractionResult> extractFractionInfo,
     FunctionExtractionResult<LogarithmicResult> extractLogarithmicInfo,
     FunctionExtractionResult<RootResult> extractRootInfo,
@@ -495,6 +574,8 @@ mixin class MathAnalysisService {
   Future<CurvatureResult> _curvature(
     AnalysisContext context,
     Expression function,
+    FunctionExtractionResult<SingleResult> extractSingleInfo,
+    FunctionExtractionResult<FactorResult> extractFactorInfo,
     FunctionExtractionResult<FractionResult> extractFractionInfo,
     FunctionExtractionResult<LogarithmicResult> extractLogarithmicInfo,
     FunctionExtractionResult<RootResult> extractRootInfo,
@@ -507,6 +588,8 @@ mixin class MathAnalysisService {
   Future<TurningPointResult> _turningPoints(
     AnalysisContext context,
     Expression function,
+    FunctionExtractionResult<SingleResult> extractSingleInfo,
+    FunctionExtractionResult<FactorResult> extractFactorInfo,
     FunctionExtractionResult<FractionResult> extractFractionInfo,
     FunctionExtractionResult<LogarithmicResult> extractLogarithmicInfo,
     FunctionExtractionResult<RootResult> extractRootInfo,
@@ -519,6 +602,8 @@ mixin class MathAnalysisService {
   Future<IntegralResult> _integral(
     AnalysisContext context,
     Expression function,
+    FunctionExtractionResult<SingleResult> extractSingleInfo,
+    FunctionExtractionResult<FactorResult> extractFactorInfo,
     FunctionExtractionResult<FractionResult> extractFractionInfo,
     FunctionExtractionResult<LogarithmicResult> extractLogarithmicInfo,
     FunctionExtractionResult<RootResult> extractRootInfo,

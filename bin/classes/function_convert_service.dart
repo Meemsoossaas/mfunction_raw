@@ -1,6 +1,9 @@
 part of 'classes.dart';
 
 mixin class FunctionConvertService {
+  static final StringManipulationService sms =
+      StringManipulationService.instance;
+
   static final FunctionConvertService instance =
       FunctionConvertService._internal();
 
@@ -8,23 +11,22 @@ mixin class FunctionConvertService {
 
   FunctionConvertService._internal();
 
-  Future<String> convertProcessedFunction() async {
+  Future<String> convertFunction(
+    String processedFunction,
+  ) async {
     throw UnimplementedError();
   }
 
   Future<String> convert(
-    StringManipulationSummary summary, {
-    required List<MathOperatorResult> mathOperators,
-  }) async {
+    StringManipulationSummary summary,
+  ) async {
     return await _convert(
       summary,
-      mathOperators,
     );
   }
 
   Future<String> _convert(
     StringManipulationSummary summary,
-    List<MathOperatorResult> mathOperators,
   ) async {
     StringBuffer buffer = StringBuffer();
     // Converting Singles
@@ -116,11 +118,16 @@ mixin class FunctionConvertService {
     final trigonometricExtractionInfo =
         summary.trigonometricResult.extractionInfo;
     trigonometricExtractionInfo.forEach(
-      (key, value) {
-        final innerContent1 =
-            value.innerContent.replaceAll(constants.euler, math.e.toString());
-        final innerContent2 =
-            innerContent1.replaceAll(constants.pi, math.pi.toString());
+      (key, value) async {
+        var buffer = StringBuffer();
+        final innerContent1 = value.innerContent.replaceAll(
+          constants.euler,
+          math.e.toString(),
+        );
+        final innerContent2 = innerContent1.replaceAll(
+          constants.pi,
+          math.pi.toString(),
+        );
         trigonometricResult.add(
           '${value.prefix}((${value.keyword}(($innerContent2))^(${value.exponent})))',
         );
@@ -174,7 +181,7 @@ mixin class FunctionConvertService {
         final innerDenominator2 =
             innerDenominator1.replaceAll(constants.pi, math.pi.toString());
         fractionResult.add(
-          '${value.prefix}(($innerNumerator2)/($innerDenominator2))',
+          '${value.prefix}($innerNumerator2/$innerDenominator2)',
         );
       },
     );
@@ -206,7 +213,9 @@ mixin class FunctionConvertService {
       ..addAll(exponentialResult)
       ..addAll(singleResult);
     for (var component in summaryList) {
-      buffer.write(component);
+      buffer.write(
+        buffer.isEmpty ? component.removeAtIndex(0) : component,
+      );
     }
     return buffer.toString();
   }
